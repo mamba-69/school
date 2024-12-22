@@ -3,10 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Presentation</title>
+  <title>PDF Viewer</title>
+  <style>
+    #pdfViewerContainer {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #pdfViewer {
+      width: 80%;
+      height: 80%;
+    }
+  </style>
 </head>
 <body>
-  <h1>My PowerPoint Presentation</h1>
-  <embed src="Taxation-in-India-A-Journey-Through-Time.pdf" width="100%" height="800px" />
+  <div id="pdfViewerContainer">
+    <canvas id="pdfViewer"></canvas>
+  </div>
+
+  <!-- Link to PDF.js via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.15.349/pdf.min.js"></script>
+
+  <script>
+    // PDF URL (replace with your own PDF URL)
+    const pdfUrl = 'Taxation-in-India-A-Journey-Through-Time.pdf';
+    const canvas = document.getElementById('pdfViewer');
+    const ctx = canvas.getContext('2d');
+
+    // Loading the PDF document
+    pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
+      console.log('PDF loaded successfully!');
+      
+      // Render the first page of the PDF
+      pdf.getPage(1).then(function(page) {
+        const viewport = page.getViewport({ scale: 1.5 });
+        
+        // Set canvas dimensions
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        // Render the page content on the canvas
+        page.render({ canvasContext: ctx, viewport: viewport });
+      });
+    }).catch(function(error) {
+      console.error('Error loading PDF:', error);
+    });
+  </script>
 </body>
 </html>
+
